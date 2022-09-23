@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/icon_home"
+        android:title="Главная" />
+
+    <item
+        android:id="@+id/navigation_playlist"
+        android:icon="@drawable/ic_media_playlist"
+        android:title="Плейлисты" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_media_settings"
+        android:title="Настройки" />
+
+
+</menu>
