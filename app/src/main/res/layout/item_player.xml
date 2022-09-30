@@ -5,14 +5,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/teal_700"
     android:paddingBottom="8dp"
     android:visibility="gone">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_time"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        android:stepSize="1.0"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +30,7 @@
         app:civ_border_color="@color/cardview_dark_background"
         app:civ_border_width="2dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progress_time" />
+        app:layout_constraintTop_toBottomOf="@id/slider_time" />
 
     <TextView
         android:id="@+id/tv_nameSong"

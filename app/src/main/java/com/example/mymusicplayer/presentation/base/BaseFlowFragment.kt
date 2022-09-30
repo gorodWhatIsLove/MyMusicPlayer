@@ -17,7 +17,7 @@ abstract class BaseFlowFragment(
 
     protected lateinit var navController: NavController
 
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val navHostFragment =

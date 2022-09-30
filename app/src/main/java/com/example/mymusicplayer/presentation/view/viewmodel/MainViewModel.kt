@@ -1,4 +1,4 @@
-package com.example.mymusicplayer.presentation.view
+package com.example.mymusicplayer.presentation.view.viewmodel
 
 import com.example.mymusicplayer.data.MediaRepository
 import com.example.mymusicplayer.domain.model.Song

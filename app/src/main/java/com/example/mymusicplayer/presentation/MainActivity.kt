@@ -3,8 +3,13 @@ package com.example.mymusicplayer.presentation
 import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +29,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
-    private var player: MediaPlayerService? = null
-    var serviceBound = false
+    private lateinit var mMediaBrowserCompat: MediaBrowserCompat
+
+//    private var player: MediaPlayerService? = null
+//    var serviceBound = false
     private val permissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsResult ->
         if (permissionsResult.entries.find { !it.value } == null)  {
             verifyStoragePermissions()
@@ -41,25 +48,79 @@ class MainActivity : AppCompatActivity() {
         if(!hasStorePermission()) {
             permissionsLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
         }
+        mMediaBrowserCompat = MediaBrowserCompat(
+            this, componentName, //Identifier for the service
+            connectionCallback,
+            null
+        )
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putBoolean("ServiceState", serviceBound)
-        super.onSaveInstanceState(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        mMediaBrowserCompat.connect()
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        serviceBound = savedInstanceState.getBoolean("ServiceState")
+    private val connectionCallback: MediaBrowserCompat.ConnectionCallback =
+        object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+
+                // The browser connected to the session successfully, use the token to create the controller
+                super.onConnected()
+                mMediaBrowserCompat.sessionToken.also { token ->
+                    val mediaController = MediaControllerCompat(this@MainActivity, token)
+                    MediaControllerCompat.setMediaController(this@MainActivity, mediaController)
+                }
+//                playPauseBuild()
+                Log.d("WhatIsLove", "Controller Connected")
+            }
+
+            override fun onConnectionFailed() {
+                super.onConnectionFailed()
+                Log.d("WhatIsLove", "Connection Failed")
+
+            }
+
+        }
+    private val mControllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            super.onPlaybackStateChanged(state)
+            Log.d("WhatIsLove", "Что-то поменялось $state")
+        }
+    }
+
+    fun playPauseBuild(path: String) {
+        val mediaController = MediaControllerCompat.getMediaController(this)
+        val state = mediaController.playbackState?.state
+        when(state) {
+            // if it is not playing then what are you waiting for ? PLAY !
+            PlaybackStateCompat.STATE_PAUSED,
+            PlaybackStateCompat.STATE_STOPPED,
+            PlaybackStateCompat.STATE_NONE -> {
+                mediaController.transportControls.playFromUri(Uri.parse(path), null)
+                Log.e("WhatISLove", mediaController.playbackState?.state.toString())
+                val broadcastIntent = Intent(PLAYER_RECEIVER)
+                broadcastIntent.putExtra("STATE_SONG", state)
+                sendBroadcast(broadcastIntent)
+            }
+            // you are playing ? knock it off !
+            PlaybackStateCompat.STATE_PLAYING,
+            PlaybackStateCompat.STATE_BUFFERING,
+            PlaybackStateCompat.STATE_CONNECTING -> {
+                mediaController.transportControls.pause()
+                Log.e("WhatISLove", mediaController.playbackState?.state.toString())
+                val broadcastIntent = Intent(PLAYER_RECEIVER)
+                broadcastIntent.putExtra("STATE_SONG", state)
+                sendBroadcast(broadcastIntent)
+            }
+        }
+        mediaController.registerCallback(mControllerCallback)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (serviceBound) {
-            unbindService(serviceConnection)
-            //service is active
-            player?.stopSelf()
-        }
+        val controllerCompat = MediaControllerCompat.getMediaController(this)
+        controllerCompat?.unregisterCallback(mControllerCallback)
+        mMediaBrowserCompat.disconnect()
     }
 
     private fun verifyStoragePermissions(): Boolean {
@@ -92,40 +153,6 @@ class MainActivity : AppCompatActivity() {
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
         navGraph.setStartDestination(R.id.mainFlowFragment)
         navController.graph = navGraph
-    }
-
-    //Binding this Client to the AudioPlayer Service
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as LocalBinder
-            player = binder.service
-            serviceBound = true
-            Toast.makeText(this@MainActivity, "Service Bound", Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
-
-    fun playAudio(media: String) {
-        //Check is service is active
-        if (!serviceBound) {
-            val playerIntent = Intent(this, MediaPlayerService::class.java)
-            playerIntent.putExtra("media", media)
-            startService(playerIntent)
-            bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-        } else {
-            //Service is active
-            //Send media with BroadcastReceiver
-
-            //Service is active
-            //Send a broadcast to the service -> PLAY_NEW_AUDIO
-            val broadcastIntent = Intent(Broadcast_PLAY_NEW_AUDIO)
-            broadcastIntent.putExtra("PATH", media)
-            sendBroadcast(broadcastIntent)
-        }
     }
 
     companion object {

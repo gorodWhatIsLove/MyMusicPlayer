@@ -2,7 +2,8 @@ package com.example.mymusicplayer.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mymusicplayer.presentation.view.MainViewModel
+import com.example.mymusicplayer.presentation.view.viewmodel.MainFlowViewModel
+import com.example.mymusicplayer.presentation.view.viewmodel.MainViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -19,6 +20,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun mainViewModel(viewModel: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainFlowViewModel::class)
+    abstract fun mainFlowViewModel(viewModel: MainFlowViewModel): ViewModel
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
