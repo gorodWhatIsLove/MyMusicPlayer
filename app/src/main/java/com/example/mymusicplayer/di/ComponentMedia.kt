@@ -5,8 +5,8 @@ import android.app.Application
 import android.content.Context
 import com.example.mymusicplayer.AppMedia
 import com.example.mymusicplayer.presentation.MainActivity
-import com.example.mymusicplayer.presentation.view.MainFlowFragment
-import com.example.mymusicplayer.presentation.view.MainFragment
+import com.example.mymusicplayer.presentation.view.*
+import com.example.mymusicplayer.service.ExoPlayerService
 import com.google.android.exoplayer2.ExoPlayer
 import dagger.BindsInstance
 import dagger.Component
@@ -30,6 +30,8 @@ interface ComponentMedia {
 
         fun repositoryModule(repositoryModule: RepositoryModule): Builder
 
+        fun exoPlayerModule(exoPlayerModule: ExoPlayerModule): Builder
+
 //        fun exoPlayerModule(exoPlayer: ExoPlayer): Builder
 
 //        @BindsInstance
@@ -39,4 +41,8 @@ interface ComponentMedia {
     fun inject(activity: MainActivity)
     fun inject(mainFragment: MainFragment)
     fun inject(mainFlowFragment: MainFlowFragment)
+    fun inject(exoPlayerService: ExoPlayerService)
+    fun inject(playerFragment: PlayerFragment)
+    fun inject(playlistFragment: PlaylistFragment)
+    fun inject(addSongToPlaylistFragment: AddSongToPlaylistFragment)
 }

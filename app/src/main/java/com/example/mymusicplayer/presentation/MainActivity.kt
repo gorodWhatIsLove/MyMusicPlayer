@@ -14,30 +14,56 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.mymusicplayer.AppMedia
 import com.example.mymusicplayer.R
 import com.example.mymusicplayer.databinding.ActivityMainBinding
+import com.example.mymusicplayer.service.ExoPlayerService
 import com.example.mymusicplayer.service.MediaPlayerService
 import com.example.mymusicplayer.service.MediaPlayerService.LocalBinder
+import com.google.android.exoplayer2.ExoPlayer
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     private lateinit var navController: NavController
 
     private lateinit var mMediaBrowserCompat: MediaBrowserCompat
 
-//    private var player: MediaPlayerService? = null
-//    var serviceBound = false
-    private val permissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsResult ->
-        if (permissionsResult.entries.find { !it.value } == null)  {
-            verifyStoragePermissions()
+//    private lateinit var mediaController: MediaControllerCompat
+
+    private val permissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsResult ->
+            if (permissionsResult.entries.find { !it.value } == null) {
+                verifyStoragePermissions()
+            }
         }
-    }
+
+    private val connectionCallback: MediaBrowserCompat.ConnectionCallback =
+        object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+
+                // The browser connected to the session successfully, use the token to create the controller
+                super.onConnected()
+                mMediaBrowserCompat.sessionToken.also { token ->
+                    val mediaController = MediaControllerCompat(this@MainActivity, token)
+                    MediaControllerCompat.setMediaController(this@MainActivity, mediaController)
+                }
+                Log.d("WhatIsLove", "Controller Connected")
+            }
+
+            override fun onConnectionFailed() {
+                super.onConnectionFailed()
+                Log.d("WhatIsLove", "Connection Failed")
+
+            }
+
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +71,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupNavigation()
-        if(!hasStorePermission()) {
+        if (!hasStorePermission()) {
             permissionsLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
         }
+        val componentName = ComponentName(applicationContext, ExoPlayerService::class.java)
         mMediaBrowserCompat = MediaBrowserCompat(
             this, componentName, //Identifier for the service
             connectionCallback,
@@ -60,38 +87,17 @@ class MainActivity : AppCompatActivity() {
         mMediaBrowserCompat.connect()
     }
 
-    private val connectionCallback: MediaBrowserCompat.ConnectionCallback =
-        object : MediaBrowserCompat.ConnectionCallback() {
-            override fun onConnected() {
-
-                // The browser connected to the session successfully, use the token to create the controller
-                super.onConnected()
-                mMediaBrowserCompat.sessionToken.also { token ->
-                    val mediaController = MediaControllerCompat(this@MainActivity, token)
-                    MediaControllerCompat.setMediaController(this@MainActivity, mediaController)
-                }
-//                playPauseBuild()
-                Log.d("WhatIsLove", "Controller Connected")
-            }
-
-            override fun onConnectionFailed() {
-                super.onConnectionFailed()
-                Log.d("WhatIsLove", "Connection Failed")
-
-            }
-
-        }
-    private val mControllerCallback = object : MediaControllerCompat.Callback() {
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            super.onPlaybackStateChanged(state)
-            Log.d("WhatIsLove", "Что-то поменялось $state")
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        val controllerCompat = MediaControllerCompat.getMediaController(this)
+        controllerCompat?.unregisterCallback(mControllerCallback)
+        mMediaBrowserCompat.disconnect()
     }
 
     fun playPauseBuild(path: String) {
         val mediaController = MediaControllerCompat.getMediaController(this)
         val state = mediaController.playbackState?.state
-        when(state) {
+        when (state) {
             // if it is not playing then what are you waiting for ? PLAY !
             PlaybackStateCompat.STATE_PAUSED,
             PlaybackStateCompat.STATE_STOPPED,
@@ -116,11 +122,19 @@ class MainActivity : AppCompatActivity() {
         mediaController.registerCallback(mControllerCallback)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        val controllerCompat = MediaControllerCompat.getMediaController(this)
-        controllerCompat?.unregisterCallback(mControllerCallback)
-        mMediaBrowserCompat.disconnect()
+    fun onPlayerFragment() {
+        navController.navigate(R.id.playerFragment)
+    }
+
+    fun onBack() {
+        navController.popBackStack()
+    }
+
+    private val mControllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            super.onPlaybackStateChanged(state)
+            Log.d("WhatIsLove", "Что-то поменялось $state")
+        }
     }
 
     private fun verifyStoragePermissions(): Boolean {

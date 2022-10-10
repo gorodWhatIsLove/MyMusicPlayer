@@ -15,4 +15,10 @@
         android:label="flow_fragment_main"
         tools:layout="@layout/flow_fragment_main" />
 
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.example.mymusicplayer.presentation.view.PlayerFragment"
+        android:label="player_fragment"
+        tools:layout="@layout/fragment_player"/>
+
 </navigation>

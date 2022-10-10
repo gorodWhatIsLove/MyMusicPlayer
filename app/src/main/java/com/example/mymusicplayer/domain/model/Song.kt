@@ -8,9 +8,8 @@ data class Song(
     val nameSong: String?,
     val artist: String?,
     val album: String?,
-    val time: String,
     val duration: Long,
-    val path: String
+    val path: String,
 ) : Serializable
 
 enum class PlayerState {

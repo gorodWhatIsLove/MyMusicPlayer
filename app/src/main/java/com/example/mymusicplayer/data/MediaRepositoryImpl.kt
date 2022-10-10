@@ -6,13 +6,22 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.example.mymusicplayer.data.model.PlaylistEntity
 import com.example.mymusicplayer.domain.model.Song
+import com.example.mymusicplayer.toDao
+import com.example.mymusicplayer.toDomain
 import com.example.mymusicplayer.toTime
 import javax.inject.Inject
 
-class MediaRepositoryImpl @Inject constructor(private val context: Context) : MediaRepository {
+class MediaRepositoryImpl @Inject constructor(
+    private val context: Context,
+    private val db: AppDatabase
+) :
+    MediaRepository {
 
     private val songList = mutableListOf<Song>()
+
+    private val songDao = db.songDao()
 
     @SuppressLint("Range")
     override fun initMedia() {
@@ -31,23 +40,34 @@ class MediaRepositoryImpl @Inject constructor(private val context: Context) : Me
         val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, selection)
 
         cursor?.let {
-            if(cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 do {
-                    songList.add(Song(
-                        "1",
-                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
-                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)),
-                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)).toTime(),
-                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
-                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
-                    ))
+                    songList.add(
+                        Song(
+                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
+                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
+                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)),
+                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)),
+                            cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)),
+                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)),
+                        )
+                    )
                 } while (cursor.moveToNext())
             }
             cursor.close()
         }
+        songDao.insertSongList(songList.map { it.toDao() })
     }
 
     @SuppressLint("Range")
     override fun getSongs(): List<Song> = songList
+    override fun addSongsPlaylist(namePlaylist: String, songs: List<Song>) {
+        songs.forEach { song ->
+            db.playlistDao().insert(PlaylistEntity(id = song.id, name = namePlaylist, listSongId = song.nameSong))
+        }
+    }
+
+    override fun getPlaylists(): Set<String> {
+        return db.playlistDao().getPlaylists().map { it.name }.toSet()
+    }
 }

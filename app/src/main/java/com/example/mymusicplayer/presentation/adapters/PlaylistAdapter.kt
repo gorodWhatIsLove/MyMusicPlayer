@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mymusicplayer.R
-import com.example.mymusicplayer.domain.model.Song
 
 class PlaylistAdapter(private val onClickListener: (String) -> Unit) :
     ListAdapter<String, PlaylistAdapter.PlaylistViewHolder>(PlaylistDiffCallback()) {
@@ -20,6 +19,11 @@ class PlaylistAdapter(private val onClickListener: (String) -> Unit) :
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(getItem(position), onClickListener)
     }
+
+    fun updateList() {
+        notifyDataSetChanged()
+    }
+
     class PlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvPlaylist = view.findViewById<TextView>(R.id.tv_playlist)
         private val _view = view
@@ -36,6 +40,6 @@ class PlaylistAdapter(private val onClickListener: (String) -> Unit) :
 class PlaylistDiffCallback : DiffUtil.ItemCallback<String>()  {
     override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = areContentsTheSame(oldItem, newItem)
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = areItemsTheSame(oldItem, newItem)
 }
 

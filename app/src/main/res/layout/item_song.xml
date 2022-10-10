@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@android:color/transparent">
+    android:background="@color/selector_item_song"
+    android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_image_song"
@@ -23,8 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:maxLines="2"
         android:layout_marginStart="8dp"
+        android:maxLines="2"
         app:layout_constraintEnd_toStartOf="@id/tv_time"
         app:layout_constraintStart_toEndOf="@id/iv_image_song"
         app:layout_constraintTop_toTopOf="@id/iv_image_song"

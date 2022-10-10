@@ -9,7 +9,7 @@
         android:id="@+id/navigation_home"
         android:name="com.example.mymusicplayer.presentation.view.MainFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_list_song" />
 
     <fragment
         android:id="@+id/navigation_playlist"
@@ -22,5 +22,17 @@
         android:name="com.example.mymusicplayer.presentation.view.SettingFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.example.mymusicplayer.presentation.view.PlayerFragment"
+        android:label="player_fragment"
+        tools:layout="@layout/fragment_player"/>
+
+    <fragment
+        android:id="@+id/addSongToPlaylist"
+        android:name="com.example.mymusicplayer.presentation.view.AddSongToPlaylistFragment"
+        android:label="fragment_add_song_to_playlist"
+        tools:layout="@layout/fragment_add_song_to_playlist"/>
 
 </navigation>

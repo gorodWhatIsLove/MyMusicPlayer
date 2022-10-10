@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_playlist"
@@ -20,8 +20,8 @@
         android:layout_marginStart="8dp"
         android:text="Имя плейлиста"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_playlist"
         app:layout_constraintStart_toEndOf="@id/iv_playlist"
-        app:layout_constraintTop_toTopOf="@id/iv_playlist"
-        app:layout_constraintBottom_toBottomOf="@id/iv_playlist"/>
+        app:layout_constraintTop_toTopOf="@id/iv_playlist" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,7 @@
 package com.example.mymusicplayer
 
 import android.app.Application
-import com.example.mymusicplayer.di.ComponentMedia
-import com.example.mymusicplayer.di.DaggerComponentMedia
-import com.example.mymusicplayer.di.RepositoryModule
-import com.example.mymusicplayer.di.ViewModelModule
+import com.example.mymusicplayer.di.*
 import com.google.android.exoplayer2.ExoPlayer
 import сore.viewmodel.ViewModelFactory
 
@@ -16,7 +13,7 @@ class AppMedia : Application() {
             .application(this)
             .bindContext(this)
             .repositoryModule(RepositoryModule(this))
-//            .exoPlayerModule(ExoPlayer.Builder(this).build())
+            .exoPlayerModule(ExoPlayerModule(this))
 //            .viewModelModule(ViewModelModule())
             .build()
     }

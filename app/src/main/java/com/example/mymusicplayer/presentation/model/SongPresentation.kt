@@ -10,7 +10,6 @@ data class SongPresentation(
     val nameSong: String?,
     val artist: String?,
     val album: String?,
-    val time: String,
     val duration: Long,
     val state: PlaybackStatus = PlaybackStatus.STOPED
 ) : Serializable {

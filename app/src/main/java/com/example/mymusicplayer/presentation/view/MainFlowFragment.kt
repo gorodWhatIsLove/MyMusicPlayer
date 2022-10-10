@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.mymusicplayer.AppMedia
@@ -76,10 +77,11 @@ class MainFlowFragment : BaseFlowFragment(
         super.onViewCreated(view, savedInstanceState)
         component = (activity?.application as AppMedia).appComponent
         component.inject(this)
+        binding.itemPlayer.tvNameSong.isSelected = true
         lifecycleScope.launch {
             viewModel.timerSong.collect {
                 with(binding.itemPlayer) {
-                    sliderTime.value = it
+//                    sliderTime.value = it
                 }
             }
         }
@@ -87,8 +89,14 @@ class MainFlowFragment : BaseFlowFragment(
 
     override fun onStart() {
         super.onStart()
-        binding.itemPlayer.btnPlayOrPause.setOnClickListener {
-            (activity as? MainActivity)?.playPauseBuild(viewModel.curSong?.path ?: "")
+        with(binding.itemPlayer) {
+            itemPlayer.setOnClickListener {
+                goneItemPlayer()
+                navController.navigate(R.id.playerFragment)
+            }
+            btnPlayOrPause.setOnClickListener {
+                (activity as? MainActivity)?.playPauseBuild(viewModel.curSong?.path ?: "")
+            }
         }
     }
 
