@@ -21,4 +21,6 @@
         android:label="player_fragment"
         tools:layout="@layout/fragment_player"/>
 
+
+
 </navigation>

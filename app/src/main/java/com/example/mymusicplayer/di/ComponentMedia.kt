@@ -32,8 +32,6 @@ interface ComponentMedia {
 
         fun exoPlayerModule(exoPlayerModule: ExoPlayerModule): Builder
 
-//        fun exoPlayerModule(exoPlayer: ExoPlayer): Builder
-
 //        @BindsInstance
 //        fun viewModelModule(viewModelModule: ViewModelModule): Builder
     }
@@ -45,4 +43,6 @@ interface ComponentMedia {
     fun inject(playerFragment: PlayerFragment)
     fun inject(playlistFragment: PlaylistFragment)
     fun inject(addSongToPlaylistFragment: AddSongToPlaylistFragment)
+    fun inject(createFinalFragment: CreateFinalFragment)
+    fun inject(choisePlaylistForFinalFragment: ChoisePlaylistForFinalFragment)
 }

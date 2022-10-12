@@ -6,7 +6,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.example.mymusicplayer.data.model.FinalEntity
 import com.example.mymusicplayer.data.model.PlaylistEntity
+import com.example.mymusicplayer.domain.model.Final
 import com.example.mymusicplayer.domain.model.Song
 import com.example.mymusicplayer.toDao
 import com.example.mymusicplayer.toDomain
@@ -69,5 +71,26 @@ class MediaRepositoryImpl @Inject constructor(
 
     override fun getPlaylists(): Set<String> {
         return db.playlistDao().getPlaylists().map { it.name }.toSet()
+    }
+
+    override fun addFinal(finalModel: Final) {
+        finalModel.listPlaylist.forEach {
+            db.finalDao()
+                .inserFinal(FinalEntity(0, finalModel.name, finalModel.durationDance, finalModel.durationPause, it))
+        }
+    }
+
+    override fun getFinal(): List<Final> {
+        val finalList: MutableList<Final> = mutableListOf()
+        db.finalDao().getFinal().forEach { final ->
+            if(finalList.any { it.name == final.name }) {
+                finalList.filter { it.name == final.name }.map {
+                    it.listPlaylist.add(final.PlaylistName)
+                }
+            } else {
+                finalList.add(Final(final.name, final.durationDance, final.durationPause, mutableListOf(final.PlaylistName)))
+            }
+        }
+        return finalList
     }
 }

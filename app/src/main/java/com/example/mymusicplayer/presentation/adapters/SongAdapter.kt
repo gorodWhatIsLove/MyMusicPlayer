@@ -64,7 +64,6 @@ class SongAdapter @Inject constructor(
         private val nameSong: TextView = view.findViewById(R.id.tv_nameSong)
         private val artist: TextView = view.findViewById(R.id.tv_artist)
         private val time: TextView = view.findViewById(R.id.tv_time)
-        private val _view = view
 
         fun bind(song: Song) {
             nameSong.text = song.nameSong

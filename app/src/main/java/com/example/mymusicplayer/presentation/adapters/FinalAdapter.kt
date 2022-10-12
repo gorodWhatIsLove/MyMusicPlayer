@@ -9,19 +9,23 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mymusicplayer.R
 
-class PlaylistAdapter(private val onClickListener: (String) -> Unit) :
-    ListAdapter<String, PlaylistAdapter.PlaylistViewHolder>(PlaylistDiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
+class FinalAdapter constructor(val onClickListener: (Int) -> Unit) :
+    ListAdapter<String, FinalAdapter.FinalViewHolder>(FinalDiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinalViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PlaylistViewHolder(inflater.inflate(R.layout.item_playlist, parent, false))
+        return FinalViewHolder(inflater.inflate(R.layout.item_final, parent, false))
     }
 
-    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
-        holder.bind(getItem(position), onClickListener)
+    override fun onBindViewHolder(holder: FinalViewHolder, position: Int) {
+        holder.bind(getItem(position)) {
+//            holder.itemView.isSelected = !holder.itemView.isSelected
+            onClickListener(position)
+        }
     }
 
-    class PlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val tvPlaylist = view.findViewById<TextView>(R.id.tv_playlist)
+    class FinalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val tvPlaylist = view.findViewById<TextView>(R.id.tv_name_playlist)
         private val _view = view
 
         fun bind(item: String, onClickListener: (String) -> Unit) {
@@ -33,9 +37,8 @@ class PlaylistAdapter(private val onClickListener: (String) -> Unit) :
     }
 }
 
-class PlaylistDiffCallback : DiffUtil.ItemCallback<String>()  {
+class FinalDiffCallback : DiffUtil.ItemCallback<String>() {
     override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = areItemsTheSame(oldItem, newItem)
 }
-

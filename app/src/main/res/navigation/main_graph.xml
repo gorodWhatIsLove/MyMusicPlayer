@@ -35,4 +35,16 @@
         android:label="fragment_add_song_to_playlist"
         tools:layout="@layout/fragment_add_song_to_playlist"/>
 
+    <fragment
+        android:id="@+id/createFinalfragment"
+        android:name="com.example.mymusicplayer.presentation.view.CreateFinalFragment"
+        android:label="create_final_fragment"
+        tools:layout="@layout/fragment_create_final"/>
+
+    <fragment
+        android:id="@+id/choisePlaylistForFinalFragment"
+        android:name="com.example.mymusicplayer.presentation.view.ChoisePlaylistForFinalFragment"
+        android:label="choise_playlist_for_final_fragment"
+        tools:layout="@layout/fragment_choise_playlist_for_final"/>
+
 </navigation>

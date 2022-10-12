@@ -45,7 +45,6 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
         lifecycleScope.launch {
             viewModel.playlistFlow.collect {
                 playlistAdapter.submitList(it)
-                playlistAdapter.notifyDataSetChanged()
             }
         }
         binding.btnAddPlaylist.setOnClickListener {

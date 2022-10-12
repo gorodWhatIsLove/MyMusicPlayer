@@ -15,10 +15,6 @@ import javax.inject.Singleton
 @Module
 class RepositoryModule(val context: Context) {
 
-//    @Singleton
-//    @Provides
-//    fun provideContext(): Context = app
-
     @Singleton
     @Provides
     fun provideRepositoryMedia(context: Context, db: AppDatabase): MediaRepository =

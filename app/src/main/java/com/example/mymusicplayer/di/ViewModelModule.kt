@@ -2,10 +2,7 @@ package com.example.mymusicplayer.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mymusicplayer.presentation.view.viewmodel.AddSongToPlaylistViewModel
-import com.example.mymusicplayer.presentation.view.viewmodel.MainFlowViewModel
-import com.example.mymusicplayer.presentation.view.viewmodel.MainViewModel
-import com.example.mymusicplayer.presentation.view.viewmodel.PlaylistViewModel
+import com.example.mymusicplayer.presentation.view.viewmodel.*
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -37,6 +34,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AddSongToPlaylistViewModel::class)
     abstract fun addSongToPlaylistViewModel(viewModel: AddSongToPlaylistViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateFinalViewModel::class)
+    abstract fun createFinalViewModel(viewModel: CreateFinalViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChoisePlaylistForFinalViewModel::class)
+    abstract fun choisePlaylistForFinalViewModel(viewModel: ChoisePlaylistForFinalViewModel): ViewModel
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)

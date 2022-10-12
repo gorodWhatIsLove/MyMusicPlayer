@@ -58,8 +58,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_create_final"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/item_final" />
+
+    <Button
+        android:id="@+id/btn_create_final"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small"
+        android:text="Создать прогон"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_add_dance"
+        app:layout_constraintEnd_toStartOf="@id/btn_delete_dance"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

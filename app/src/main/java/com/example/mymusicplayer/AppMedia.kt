@@ -14,7 +14,6 @@ class AppMedia : Application() {
             .bindContext(this)
             .repositoryModule(RepositoryModule(this))
             .exoPlayerModule(ExoPlayerModule(this))
-//            .viewModelModule(ViewModelModule())
             .build()
     }
 }
